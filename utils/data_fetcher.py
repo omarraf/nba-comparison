@@ -16,13 +16,13 @@ def get_player_stats(player_id):
 
 def get_player_image(player_id):
     """Get player headshot image."""
-    url = f"[https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png"](https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png")
+    url = f"https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png"
     try:
         response = requests.get(url)
         if response.status_code == 200:
             return BytesIO(response.content)
         else:
             # Return a placeholder image if player image not found
-            return "[https://cdn.nba.com/logos/nba/fallback-headshot.png"](https://cdn.nba.com/logos/nba/fallback-headshot.png")
+            return "https://cdn.nba.com/logos/nba/fallback-headshot.png"
     except:
-        return "[https://cdn.nba.com/logos/nba/fallback-headshot.png"](https://cdn.nba.com/logos/nba/fallback-headshot.png")
+        return "https://cdn.nba.com/logos/nba/fallback-headshot.png"
