@@ -101,7 +101,7 @@ st.markdown("## Basic Statistics Comparison")
 comparison_df = pd.DataFrame({
     'Stat': ['PPG', 'RPG', 'APG', 'SPG', 'BPG', 'FG%', '3P%', 'FT%'],
     player1_name: [
-        player1_season_stats['PTS'], 
+        player1_season_stats['PTS'] / 100, 
         player1_season_stats['REB'], 
         player1_season_stats['AST'], 
         player1_season_stats['STL'], 
@@ -111,7 +111,7 @@ comparison_df = pd.DataFrame({
         player1_season_stats['FT_PCT'] * 100
     ],
     player2_name: [
-        player2_season_stats['PTS'], 
+        player2_season_stats['PTS'] / 100, 
         player2_season_stats['REB'], 
         player2_season_stats['AST'], 
         player2_season_stats['STL'], 
@@ -124,3 +124,4 @@ comparison_df = pd.DataFrame({
 
 # Display basic stats bar chart
 st.plotly_chart(create_stat_comparison(comparison_df, player1_name, player2_name), use_container_width=True)
+
