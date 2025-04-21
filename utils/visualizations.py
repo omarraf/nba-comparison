@@ -30,3 +30,37 @@ def create_stat_comparison(df, player1_name, player2_name):
     )
     
     return fig
+def create_radar_chart(df, player1_name, player2_name):
+    """Create a radar chart comparing advanced metrics between two players."""
+    categories = df['Metric'].tolist()
+    
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatterpolar(
+        r=df[player1_name].tolist(),
+        theta=categories,
+        fill='toself',
+        name=player1_name,
+        line_color='#1D428A'
+    ))
+    
+    fig.add_trace(go.Scatterpolar(
+        r=df[player2_name].tolist(),
+        theta=categories,
+        fill='toself',
+        name=player2_name,
+        line_color='#C8102E'
+    ))
+    
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+            ),
+        ),
+        showlegend=True,
+        title='Advanced Metrics Comparison',
+        height=500
+    )
+    
+    return fig
