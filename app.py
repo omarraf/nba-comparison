@@ -98,10 +98,13 @@ with col2:
 # Basic stats comparison
 st.markdown("## Basic Statistics Comparison")
 
+col1_label = f"{player1_name} ({season1})"
+col2_label = f"{player2_name} ({season2})"
+
 # Create comparison dataframe
 comparison_df = pd.DataFrame({
     'Stat': ['PPG', 'RPG', 'APG', 'SPG', 'BPG', 'FG%', '3P%', 'FT%'],
-    player1_name: [
+    col1_label: [
         player1_season_stats['PTS'] / 100, 
         player1_season_stats['REB'] / 100, 
         player1_season_stats['AST'] / 100, 
@@ -111,7 +114,7 @@ comparison_df = pd.DataFrame({
         player1_season_stats['FG3_PCT'] * 100, 
         player1_season_stats['FT_PCT'] * 100
     ],
-    player2_name: [
+    col2_label: [
         player2_season_stats['PTS'] / 100, 
         player2_season_stats['REB'] / 100, 
         player2_season_stats['AST'] / 100, 
@@ -144,7 +147,7 @@ for i, stat in enumerate(stats):
     row=1, col=i+1
 )
 
-    fig.update_xaxes(title_text="Player", row=1, col=i+1)
+    fig.update_xaxes(title_text="", row=1, col=i+1)
     fig.update_yaxes(title_text="", row=1, col=i+1)
 
 fig.update_layout(
