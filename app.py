@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from utils.data_fetcher import get_all_players, get_player_stats, get_player_image
 from utils.visualizations import create_stat_comparison, create_radar_chart
 
@@ -102,20 +103,20 @@ comparison_df = pd.DataFrame({
     'Stat': ['PPG', 'RPG', 'APG', 'SPG', 'BPG', 'FG%', '3P%', 'FT%'],
     player1_name: [
         player1_season_stats['PTS'] / 100, 
-        player1_season_stats['REB'], 
-        player1_season_stats['AST'], 
-        player1_season_stats['STL'], 
-        player1_season_stats['BLK'], 
+        player1_season_stats['REB'] / 100, 
+        player1_season_stats['AST'] / 100, 
+        player1_season_stats['STL'] / 100, 
+        player1_season_stats['BLK'] / 100, 
         player1_season_stats['FG_PCT'] * 100, 
         player1_season_stats['FG3_PCT'] * 100, 
         player1_season_stats['FT_PCT'] * 100
     ],
     player2_name: [
         player2_season_stats['PTS'] / 100, 
-        player2_season_stats['REB'], 
-        player2_season_stats['AST'], 
-        player2_season_stats['STL'], 
-        player2_season_stats['BLK'], 
+        player2_season_stats['REB'] / 100, 
+        player2_season_stats['AST'] / 100, 
+        player2_season_stats['STL'] / 100, 
+        player2_season_stats['BLK'] / 100, 
         player2_season_stats['FG_PCT'] * 100, 
         player2_season_stats['FG3_PCT'] * 100, 
         player2_season_stats['FT_PCT'] * 100
@@ -123,7 +124,39 @@ comparison_df = pd.DataFrame({
 })
 
 # Display basic stats bar chart
-st.plotly_chart(create_stat_comparison(comparison_df, player1_name, player2_name), use_container_width=True)
+stats = comparison_df['Stat'].tolist()
+players = [col for col in comparison_df.columns if col != 'Stat']
+
+fig = make_subplots(rows=1, cols=len(stats), subplot_titles=stats)
+
+for i, stat in enumerate(stats):
+    values = comparison_df[comparison_df['Stat'] == stat][players].values[0]
+    fig.add_trace(
+    go.Bar(
+        x=players,
+        y=values,
+        text=[f"{v:.2f}" for v in values],
+        textposition='inside', 
+        marker_color=['#1D428A', '#C8102E'],
+        showlegend=False,
+        cliponaxis=False  # Prevents text from being clipped or overlaid
+    ),
+    row=1, col=i+1
+)
+
+    fig.update_xaxes(title_text="Player", row=1, col=i+1)
+    fig.update_yaxes(title_text="", row=1, col=i+1)
+
+fig.update_layout(
+    height=400,  # or higher
+
+    width=250*len(stats),
+    title_text="Player Comparison: Stat by Stat",
+    showlegend=False,
+    template="plotly_white"
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 # Advanced metrics comparison
 st.markdown("## Advanced Metrics")
