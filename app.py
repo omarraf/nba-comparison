@@ -1,11 +1,9 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from utils.data_fetcher import get_all_players, get_player_stats, get_player_image
-from utils.visualizations import create_stat_comparison, create_radar_chart
-
+from utils.data_fetcher import get_all_players, get_player_stats, get_player_image, get_shotchart_df
+from utils.visualizations import create_stat_comparison, create_radar_chart, plot_made_shots_scatter
 
 # Page configuration
 st.set_page_config(
@@ -161,42 +159,18 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# Advanced metrics comparison
-st.markdown("## Advanced Metrics")
+# Get shot data for each player/season
+df1 = get_shotchart_df(player1_id, season1)
+df2 = get_shotchart_df(player2_id, season2)
 
-# Create advanced metrics dataframe
-advanced_df = pd.DataFrame({
-    'Metric': ['PER', 'TS%', 'USG%', 'ORTG', 'DRTG'],
-    player1_name: [
-        player1_season_stats.get('PER', 0),
-        player1_season_stats.get('TS_PCT', 0) * 100,
-        player1_season_stats.get('USG_PCT', 0) * 100,
-        player1_season_stats.get('OFFRTG', 0),
-        player1_season_stats.get('DEFRTG', 0)
-    ],
-    player2_name: [
-        player2_season_stats.get('PER', 0),
-        player2_season_stats.get('TS_PCT', 0) * 100,
-        player2_season_stats.get('USG_PCT', 0) * 100,
-        player2_season_stats.get('OFFRTG', 0),
-        player2_season_stats.get('DEFRTG', 0)
-    ]
-})
-
-# Display radar chart for advanced metrics
-st.plotly_chart(create_radar_chart(advanced_df, player1_name, player2_name), use_container_width=True)
-
-# Detailed stats tables
-st.markdown("## Detailed Statistics")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown(f"### {player1_name}")
-    st.dataframe(pd.DataFrame(player1_season_stats).transpose())
-
+    st.markdown(f"### {col1_label} Made Shots")
+    st.plotly_chart(plot_made_shots_scatter(df1, player1_name, season1), use_container_width=True)
 with col2:
-    st.markdown(f"### {player2_name}")
-    st.dataframe(pd.DataFrame(player2_season_stats).transpose())
+    st.markdown(f"### {col2_label} Made Shots")
+    st.plotly_chart(plot_made_shots_scatter(df2, player2_name, season2), use_container_width=True)
 
 # Footer
 st.markdown("---")

@@ -3,6 +3,17 @@ from nba_api.stats.static import players
 from nba_api.stats.endpoints import playercareerstats
 import requests
 from io import BytesIO
+from nba_api.stats.endpoints import shotchartdetail
+
+def get_shotchart_df(player_id, season):
+    shotchart = shotchartdetail.ShotChartDetail(
+        team_id=0,  # 0 means all teams (useful for players who switched teams)
+        player_id=player_id,
+        season_type_all_star='Regular Season',
+        season_nullable=season
+    )
+    df = shotchart.get_data_frames()[0]
+    return df
 
 def get_all_players():
     """Get a list of all NBA players."""
