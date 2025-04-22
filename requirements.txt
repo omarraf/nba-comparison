@@ -1,5 +1,5 @@
 streamlit==1.22.0
 nba_api==1.2.1
 pandas==2.0.1
-numpy==1.24.3
+numpy>=1.26.0
 plotly==5.14.1
