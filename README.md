@@ -4,7 +4,7 @@ A modern, interactive Streamlit app for comparing NBA players’ statistics, sho
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Player Selection:** Search and select any two NBA players from history.
 - **Season Selection:** Compare players from any season of their careers.
