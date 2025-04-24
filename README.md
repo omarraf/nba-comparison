@@ -12,8 +12,7 @@ A modern, interactive Streamlit app for comparing NBA players’ statistics, sho
 - **Shot Chart Visualization:** Interactive scatter plot of made shots overlaid on a stylized NBA court.
 
 
-
-
+<img width="1439" alt="image" src="https://github.com/user-attachments/assets/1964080b-14ca-45bf-a8bd-3a69f322b5f7" />
 
 
 
