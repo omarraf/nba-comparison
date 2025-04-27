@@ -6,7 +6,6 @@ import numpy as np
 import plotly.graph_objects as go
 
 def add_court_shapes(fig):
-    # Steph Curry's 3pt shots at (2, 254) => center 3pt arc at y=254
     court_shapes = [
         # Hoop (centered at (0, 0), diameter 15)
         dict(type="circle", xref="x", yref="y", x0=-7.5, y0=-7.5, x1=7.5, y1=7.5, line=dict(color="white", width=2)),
