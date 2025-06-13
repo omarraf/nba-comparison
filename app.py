@@ -48,20 +48,26 @@ if 'players_list' not in st.session_state:
 # Sidebar for player selection
 st.sidebar.markdown("## Player Selection")
 
-# Player 1 selection
+# Player selection
 player1_name = st.sidebar.selectbox(
     "Select Player 1:",
-    options=st.session_state.players_list['full_name'].tolist(),
+    options=["Select a player"] + st.session_state.players_list['full_name'].tolist(),
     key="player1"
 )
-player1_id = st.session_state.players_list[st.session_state.players_list['full_name'] == player1_name]['id'].iloc[0]
 
-# Player 2 selection
 player2_name = st.sidebar.selectbox(
     "Select Player 2:",
-    options=st.session_state.players_list['full_name'].tolist(),
+    options=["Select a player"] + st.session_state.players_list['full_name'].tolist(),
     key="player2"
 )
+
+# Only proceed if both players are selected
+if player1_name == "Select a player" or player2_name == "Select a player":
+    st.info("Please select both players to see the comparison")
+    st.stop()
+
+
+player1_id = st.session_state.players_list[st.session_state.players_list['full_name'] == player1_name]['id'].iloc[0]
 player2_id = st.session_state.players_list[st.session_state.players_list['full_name'] == player2_name]['id'].iloc[0]
 
 # Get player career stats
