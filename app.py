@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from utils.data_fetcher import get_all_players, get_player_stats, get_player_image, get_shotchart_df
 from utils.visualizations import create_stat_comparison, create_radar_chart, plot_made_shots_scatter
+from utils.bedrock_client import BedrockClient
 
 # Page configuration
 st.set_page_config(
@@ -33,6 +34,23 @@ st.markdown("""
         border-radius: 10px;
         padding: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .ai-insights-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        color: white;
+        margin-top: 1rem;
+    }
+    .ai-insights-card h3 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+    .ai-insights-card p {
+        color: white;
+        line-height: 1.8;
+        font-size: 1.05rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -177,6 +195,45 @@ with col1:
 with col2:
     st.markdown(f"### {col2_label} Made Shots")
     st.plotly_chart(plot_made_shots_scatter(df2, player2_name, season2), use_container_width=True)
+
+# AI-Powered Comparison Insights
+st.markdown("---")
+st.markdown("## AI-Powered Comparison Insights")
+
+# Add a button to generate insights
+if st.button("🔮 Generate AI Analysis", type="primary", use_container_width=True):
+    with st.spinner("🏀 Analyzing players with AI..."):
+        try:
+            # Initialize Bedrock client
+            bedrock = BedrockClient(region_name="us-east-1")
+
+            # Generate comparison
+            insights = bedrock.generate_player_comparison(
+                player1_name=player1_name,
+                player2_name=player2_name,
+                season1=season1,
+                season2=season2,
+                player1_stats=player1_season_stats,
+                player2_stats=player2_season_stats
+            )
+
+            # Convert markdown-style formatting to HTML
+            insights_html = insights.replace('\n\n', '</p><p>').replace('\n', '<br>')
+
+            # Display insights in a nice container
+            st.markdown(
+                f"""
+                <div class='ai-insights-card'>
+                    <h3>📊 Expert Analysis</h3>
+                    <p>{insights_html}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        except Exception as e:
+            st.error(f"❌ Failed to generate AI insights: {str(e)}")
+            st.info("💡 Make sure AWS Bedrock is configured and model access is enabled.")
 
 # Footer
 st.markdown("---")
