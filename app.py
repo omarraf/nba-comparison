@@ -88,9 +88,16 @@ if player1_name == "Select a player" or player2_name == "Select a player":
 player1_id = st.session_state.players_list[st.session_state.players_list['full_name'] == player1_name]['id'].iloc[0]
 player2_id = st.session_state.players_list[st.session_state.players_list['full_name'] == player2_name]['id'].iloc[0]
 
-# Get player career stats
-player1_stats = get_player_stats(player1_id)
-player2_stats = get_player_stats(player2_id)
+# Get player career stats with error handling
+try:
+    with st.spinner(f"Loading {player1_name}'s career data..."):
+        player1_stats = get_player_stats(player1_id)
+    with st.spinner(f"Loading {player2_name}'s career data..."):
+        player2_stats = get_player_stats(player2_id)
+except Exception as e:
+    st.error("⚠️ NBA API is currently unavailable or slow. Please try again in a few moments.")
+    st.info("💡 Tip: The NBA API can be slow during peak times. Try refreshing the page or selecting different players.")
+    st.stop()
 
 # Get available seasons for both players
 player1_seasons = sorted(player1_stats['SEASON_ID'].unique(), reverse=True)
@@ -184,17 +191,22 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # Get shot data for each player/season
-df1 = get_shotchart_df(player1_id, season1)
-df2 = get_shotchart_df(player2_id, season2)
+with st.spinner("Loading shot chart data..."):
+    df1 = get_shotchart_df(player1_id, season1)
+    df2 = get_shotchart_df(player2_id, season2)
 
-col1, col2 = st.columns(2)
+# Only show shot charts if we have data
+if not df1.empty and not df2.empty:
+    col1, col2 = st.columns(2)
 
-with col1:
-    st.markdown(f"### {col1_label} Made Shots")
-    st.plotly_chart(plot_made_shots_scatter(df1, player1_name, season1), use_container_width=True)
-with col2:
-    st.markdown(f"### {col2_label} Made Shots")
-    st.plotly_chart(plot_made_shots_scatter(df2, player2_name, season2), use_container_width=True)
+    with col1:
+        st.markdown(f"### {col1_label} Made Shots")
+        st.plotly_chart(plot_made_shots_scatter(df1, player1_name, season1), use_container_width=True)
+    with col2:
+        st.markdown(f"### {col2_label} Made Shots")
+        st.plotly_chart(plot_made_shots_scatter(df2, player2_name, season2), use_container_width=True)
+else:
+    st.warning("⚠️ Shot chart data is temporarily unavailable. The basic stats comparison above is still accurate!")
 
 # AI-Powered Comparison Insights
 st.markdown("---")
